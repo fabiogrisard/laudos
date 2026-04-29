@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Método Comparativo Direto de Dados de Mercado COM DEBUG INTEGRADO</title>
+    <title>MCDDM - EXATA</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -14,467 +15,507 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f9;
             color: #555;
-            padding: 20px;
             line-height: 1.6;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,123,255,0.1);
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 3px solid #4b0082;
+            margin-bottom: 20px;
+        }
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #007BFF;
+            margin-bottom: 10px;
         }
         h1 {
             color: #007BFF;
-            text-align: center;
-            margin-bottom: 10px;
             font-size: 1.8em;
         }
-        .logo {
-            background: linear-gradient(135deg, #4b0082, #007BFF);
-            color: white;
-            font-weight: bold;
-            font-size: 2em;
-            text-align: center;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-        }
-        .input-section label {
-            display: block;
-            font-weight: bold;
-            color: #4b0082;
-            margin-bottom: 10px;
-        }
-        .input-group {
+        .progress {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        #textoBruto {
-            flex: 1;
-            height: 300px;
-            padding: 15px;
-            border: 2px solid #007BFF;
-            border-radius: 8px;
-            font-size: 16px;
-            resize: vertical;
-            font-family: monospace;
-        }
-        #microfoneBtn {
-            background: #007BFF;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 50%;
-            font-size: 1.5em;
-            cursor: pointer;
-            width: 60px;
-            height: 60px;
-            transition: background 0.3s;
-        }
-        #microfoneBtn:hover {
-            background: #0056b3;
-        }
-        #microfoneBtn.active {
-            background: #dc3545;
-        }
-        .buttons {
-            display: flex;
-            gap: 15px;
             justify-content: center;
-            margin-bottom: 20px;
+            gap: 30px;
+            margin-bottom: 30px;
         }
-        button {
+        .step-indicator {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ddd;
+            color: #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            border: 3px solid #4b0082;
+            transition: all 0.3s;
+        }
+        .step-indicator.active {
             background: #007BFF;
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
         }
-        button:hover {
-            background: #0056b3;
+        .wizard {
+            background: white;
+            border: 2px solid #4b0082;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .debug-box {
-            background: #fff3cd;
-            border: 2px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .debug-box h3 {
-            color: #856404;
-            margin-bottom: 15px;
-        }
-        .debug-box p {
-            margin-bottom: 10px;
-        }
-        .response-box {
-            background: #d4edda;
-            border: 2px solid #c3e6cb;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .response-box.error {
-            background: #f8d7da;
-            border-color: #f5c6cb;
-        }
-        .response-box h3 {
-            color: #155724;
-            margin-bottom: 15px;
-        }
-        .response-box.error h3 {
-            color: #721c24;
-        }
-        pre {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 4px;
-            overflow-x: auto;
-            font-size: 14px;
-        }
-        #message {
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 20px;
+        .step {
             display: none;
         }
-        #message.success {
+        .step.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #4b0082;
+        }
+        textarea, input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: #007BFF;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn-primary {
+            background: #007BFF;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .btn-mic {
+            background: #28a745;
+            color: white;
+            font-size: 1.5em;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-mic.listening {
+            background: #dc3545;
+        }
+        .comparavel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007BFF;
+        }
+        h3 {
+            color: #4b0082;
+            margin-bottom: 15px;
+        }
+        h4 {
+            color: #007BFF;
+            margin-bottom: 10px;
+        }
+        #responseBox {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 250px;
+            overflow: auto;
+            font-family: monospace;
+            font-size: 0.9em;
+            display: none;
+            margin-top: 20px;
+            border: 1px solid #4b0082;
+        }
+        #status {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .alert-success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-        #message.error {
+        .alert-error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
         }
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        .close {
-            position: absolute;
-            right: 20px;
-            top: 15px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #aaa;
-        }
-        .close:hover {
-            color: #000;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-            }
-            .input-group {
-                flex-direction: column;
-            }
-            #microfoneBtn {
-                width: 100%;
-                border-radius: 6px;
-            }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Método Comparativo Direto de Dados de Mercado<br><small>COM DEBUG INTEGRADO</small></h1>
-        <div class="logo">EXATA</div>
-        
-        <div class="input-section">
-            <label for="textoBruto">Texto Bruto (Cole ou grave o texto aqui):</label>
-            <div class="input-group">
-                <textarea id="textoBruto" placeholder="Digite ou grave o texto bruto do mercado..."></textarea>
-                <button id="microfoneBtn" title="Ativar microfone (pt-BR)">🎤</button>
+        <header>
+            <div class="logo">EXATA</div>
+            <h1>Método Comparativo Direto de Dados de Mercado</h1>
+        </header>
+        <div class="progress">
+            <div id="prog1" class="step-indicator active">1</div>
+            <div id="prog2" class="step-indicator">2</div>
+            <div id="prog3" class="step-indicator">3</div>
+        </div>
+        <div class="wizard">
+            <!-- Passo 1 -->
+            <div id="step1" class="step active">
+                <div id="status"></div>
+                <div class="form-group">
+                    <label for="textoBruto">Texto Bruto (Dados de Mercado):</label>
+                    <textarea id="textoBruto" placeholder="Cole ou ditado os dados de mercado aqui..."></textarea>
+                </div>
+                <div class="btn-group">
+                    <button id="micBtn" class="btn btn-mic" title="Microfone (pt-BR)">🎤</button>
+                    <button id="btnEnviar" class="btn btn-primary">Enviar para Processamento</button>
+                </div>
+                <pre id="responseBox"></pre>
+            </div>
+            <!-- Passo 2 -->
+            <div id="step2" class="step">
+                <h3>Dados do Imóvel Base</h3>
+                <div class="form-group">
+                    <label for="base_endereco">Endereço:</label>
+                    <input type="text" id="base_endereco" placeholder="Endereço do imóvel avaliado">
+                </div>
+                <div class="form-group">
+                    <label for="base_area">Área útil (m²):</label>
+                    <input type="text" id="base_area" placeholder="Ex: 100">
+                </div>
+                <div class="form-group">
+                    <label for="base_vlm">VLM estimado (R$/m²):</label>
+                    <input type="text" id="base_vlm" placeholder="Ex: 5000">
+                </div>
+                <div class="form-group">
+                    <label for="base_valor_total">Valor total estimado (R$):</label>
+                    <input type="text" id="base_valor_total" placeholder="Ex: 500000">
+                </div>
+                <h3>Comparáveis</h3>
+                <div class="comparavel">
+                    <h4>Comparável 1</h4>
+                    <div class="form-group">
+                        <label for="comp1_endereco">Endereço:</label>
+                        <input type="text" id="comp1_endereco">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp1_area">Área útil (m²):</label>
+                        <input type="text" id="comp1_area">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp1_preco">Preço de venda (R$):</label>
+                        <input type="text" id="comp1_preco">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp1_vlm">VLM (R$/m²):</label>
+                        <input type="text" id="comp1_vlm">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp1_ajustes">Ajustes:</label>
+                        <input type="text" id="comp1_ajustes" placeholder="Ex: +10% localização">
+                    </div>
+                </div>
+                <div class="comparavel">
+                    <h4>Comparável 2</h4>
+                    <div class="form-group">
+                        <label for="comp2_endereco">Endereço:</label>
+                        <input type="text" id="comp2_endereco">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp2_area">Área útil (m²):</label>
+                        <input type="text" id="comp2_area">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp2_preco">Preço de venda (R$):</label>
+                        <input type="text" id="comp2_preco">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp2_vlm">VLM (R$/m²):</label>
+                        <input type="text" id="comp2_vlm">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp2_ajustes">Ajustes:</label>
+                        <input type="text" id="comp2_ajustes">
+                    </div>
+                </div>
+                <div class="comparavel">
+                    <h4>Comparável 3</h4>
+                    <div class="form-group">
+                        <label for="comp3_endereco">Endereço:</label>
+                        <input type="text" id="comp3_endereco">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp3_area">Área útil (m²):</label>
+                        <input type="text" id="comp3_area">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp3_preco">Preço de venda (R$):</label>
+                        <input type="text" id="comp3_preco">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp3_vlm">VLM (R$/m²):</label>
+                        <input type="text" id="comp3_vlm">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp3_ajustes">Ajustes:</label>
+                        <input type="text" id="comp3_ajustes">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button onclick="goToStep(1)" class="btn btn-secondary">Voltar</button>
+                    <button id="btnToStep3" class="btn btn-primary">Ir para Grau de Fundamentação</button>
+                </div>
+            </div>
+            <!-- Passo 3 -->
+            <div id="step3" class="step">
+                <h3>Grau de Fundamentação</h3>
+                <div class="form-group">
+                    <label for="grauFundamentacao">Selecione o grau:</label>
+                    <select id="grauFundamentacao">
+                        <option value="Alto">Alto</option>
+                        <option value="Médio">Médio</option>
+                        <option value="Baixo">Baixo</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button onclick="goToStep(2)" class="btn btn-secondary">Editar Dados</button>
+                    <button id="btnGerarPDF" class="btn btn-primary">Gerar PDF</button>
+                </div>
             </div>
         </div>
-        
-        <div class="buttons">
-            <button id="testarPayload">🔍 Testar Payload</button>
-            <button id="enviar">🚀 Enviar para Processamento</button>
-        </div>
-        
-        <div id="debugBox" class="debug-box">
-            <h3>📊 Debug em Tempo Real:</h3>
-            <p><strong>Texto Bruto (primeiros 100 chars):</strong> <span id="debugTexto">-</span></p>
-            <p><strong>Tamanho:</strong> <span id="debugTamanho">0</span> caracteres</p>
-            <p><strong>Status:</strong> <span id="debugStatus">Aguardando entrada...</span></p>
-        </div>
-        
-        <div id="responseBox" class="response-box" style="display: none;">
-            <h3>📥 Resposta do Webhook:</h3>
-            <p><strong>Status HTTP:</strong> <span id="respStatus">-</span></p>
-            <p><strong>Tempo de Resposta:</strong> <span id="respTempo">-</span> ms</p>
-            <pre id="respBody">-</pre>
-        </div>
-        
-        <div id="message"></div>
     </div>
-    
-    <!-- Modal para Testar Payload -->
-    <div id="payloadModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <h3>🔍 Payload JSON a ser enviado:</h3>
-            <pre id="modalPre"></pre>
-        </div>
-    </div>
-    
     <script>
-        // Configurações
-        const WEBHOOK_URL = 'https://bleatingfrilledlizard-n8n.cloudfy.live/webhook-test/mcddm';
-        const textarea = document.getElementById('textoBruto');
-        const debugTexto = document.getElementById('debugTexto');
-        const debugTamanho = document.getElementById('debugTamanho');
-        const debugStatus = document.getElementById('debugStatus');
-        const testarBtn = document.getElementById('testarPayload');
-        const enviarBtn = document.getElementById('enviar');
-        const microfoneBtn = document.getElementById('microfoneBtn');
-        const responseBox = document.getElementById('responseBox');
-        const respStatus = document.getElementById('respStatus');
-        const respTempo = document.getElementById('respTempo');
-        const respBody = document.getElementById('respBody');
-        const messageDiv = document.getElementById('message');
-        const modal = document.getElementById('payloadModal');
-        const closeModal = document.getElementById('closeModal');
-        const modalPre = document.getElementById('modalPre');
+        let recognition;
+        let isListening = false;
+        const webhookUrl = 'https://bleatingfrilledlizard-n8n.cloudfy.live/webhook-test/mcddm';
 
-        let recognition = null;
-        let isRecording = false;
+        function initRecognition() {
+            if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'pt-BR';
+                recognition.interimResults = true;
+                recognition.continuous = true;
 
-        // Função para mostrar mensagens
-        function showMessage(msg, type = 'success') {
-            console.log(`[${type.toUpperCase()}] ${msg}`);
-            messageDiv.textContent = msg;
-            messageDiv.className = `message ${type}`;
-            messageDiv.style.display = 'block';
+                recognition.onstart = () => {
+                    document.getElementById('micBtn').textContent = '⏹';
+                    document.getElementById('micBtn').classList.add('listening');
+                    isListening = true;
+                };
+
+                recognition.onend = () => {
+                    document.getElementById('micBtn').textContent = '🎤';
+                    document.getElementById('micBtn').classList.remove('listening');
+                    isListening = false;
+                };
+
+                recognition.onresult = (event) => {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    const textarea = document.getElementById('textoBruto');
+                    textarea.value += finalTranscript + interimTranscript;
+                    textarea.scrollTop = textarea.scrollHeight;
+                    localStorage.setItem('textoBruto', textarea.value);
+                };
+
+                recognition.onerror = (event) => {
+                    showMessage('Erro no reconhecimento de voz: ' + event.error, 'error');
+                };
+            }
+        }
+
+        function goToStep(n) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step${n}`).classList.add('active');
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`prog${i}`).classList.toggle('active', i === n);
+            }
+            localStorage.setItem('currentStep', n.toString());
+        }
+
+        function showMessage(msg, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = msg;
+            status.className = `alert alert-${type}`;
             setTimeout(() => {
-                messageDiv.style.display = 'none';
+                status.textContent = '';
+                status.className = 'alert';
             }, 5000);
         }
 
-        // Auto-save em localStorage
-        function saveToStorage() {
-            try {
-                localStorage.setItem('texto_bruto_mcdm', textarea.value);
-                console.log('Texto salvo no localStorage. Tamanho:', textarea.value.length);
-            } catch (e) {
-                console.error('Erro ao salvar no localStorage:', e);
-            }
+        function fillFields(data) {
+            const fields = [
+                'base_endereco', 'base_area', 'base_vlm', 'base_valor_total',
+                'comp1_endereco', 'comp1_area', 'comp1_preco', 'comp1_vlm', 'comp1_ajustes',
+                'comp2_endereco', 'comp2_area', 'comp2_preco', 'comp2_vlm', 'comp2_ajustes',
+                'comp3_endereco', 'comp3_area', 'comp3_preco', 'comp3_vlm', 'comp3_ajustes'
+            ];
+            fields.forEach(field => {
+                const el = document.getElementById(field);
+                if (el && data[field]) {
+                    el.value = data[field];
+                }
+            });
         }
 
-        // Carregar do localStorage
-        function loadFromStorage() {
-            try {
-                const saved = localStorage.getItem('texto_bruto_mcdm');
-                if (saved) {
-                    textarea.value = saved;
-                    updateDebug();
-                    console.log('Texto carregado do localStorage.');
-                }
-            } catch (e) {
-                console.error('Erro ao carregar do localStorage:', e);
-            }
+        function getFieldValue(id) {
+            return document.getElementById(id).value || '';
         }
 
-        // Atualizar debug em tempo real
-        function updateDebug() {
-            const texto = textarea.value;
-            debugTexto.textContent = texto.substring(0, 100) + (texto.length > 100 ? '...' : '');
-            debugTamanho.textContent = texto.length;
-            debugStatus.textContent = texto.trim() ? '✅ Pronto para envio' : '❌ Vazio - Digite algo';
-            console.log('Debug atualizado - Tamanho:', texto.length, 'Status:', debugStatus.textContent);
-        }
-
-        // Inicializar reconhecimento de voz
-        function initRecognition() {
-            try {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SpeechRecognition) {
-                    throw new Error('SpeechRecognition não suportado neste navegador');
-                }
-                recognition = new SpeechRecognition();
-                recognition.lang = 'pt-BR';
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
-                recognition.onresult = function(event) {
-                    const transcript = event.results[0][0].transcript;
-                    textarea.value += transcript + ' ';
-                    updateDebug();
-                    saveToStorage();
-                    console.log('Texto transcrito:', transcript);
-                };
-                recognition.onerror = function(event) {
-                    console.error('Erro no reconhecimento de voz:', event.error);
-                    microfoneBtn.classList.remove('active');
-                    isRecording = false;
-                    microfoneBtn.title = 'Erro: ' + event.error;
-                };
-                recognition.onend = function() {
-                    microfoneBtn.classList.remove('active');
-                    isRecording = false;
-                };
-                console.log('Reconhecimento de voz inicializado (pt-BR)');
-            } catch (e) {
-                console.error('Falha ao inicializar reconhecimento:', e);
-                microfoneBtn.disabled = true;
-                microfoneBtn.title = 'Microfone não suportado';
+        async function processar() {
+            const texto = document.getElementById('textoBruto').value.trim();
+            if (!texto) {
+                showMessage('Por favor, insira o texto bruto ou use o microfone.', 'error');
+                return;
             }
-        }
-
-        // Testar Payload
-        testarBtn.addEventListener('click', () => {
+            showMessage('Enviando para processamento...', 'info');
             try {
-                const texto = textarea.value.trim();
-                if (!texto) {
-                    showMessage('Erro: Textarea vazio! Digite algo primeiro.', 'error');
-                    return;
-                }
-                const payload = {
-                    metodo: 'comparativo',
-                    texto_bruto: texto
-                };
-                const jsonStr = JSON.stringify(payload, null, 2);
-                console.log('=== TESTE PAYLOAD ===');
-                console.log('Payload objeto:', payload);
-                console.log('JSON string (tamanho:', jsonStr.length, '):', jsonStr);
-                console.log('Texto bruto tamanho:', texto.length);
-                modalPre.textContent = jsonStr;
-                modal.style.display = 'block';
-            } catch (e) {
-                console.error('Erro ao testar payload:', e);
-                showMessage('Erro ao gerar payload: ' + e.message, 'error');
-            }
-        });
-
-        // Enviar para Webhook
-        enviarBtn.addEventListener('click', async () => {
-            try {
-                const texto = textarea.value.trim();
-                if (!texto) {
-                    showMessage('Erro: Textarea vazio! Digite ou grave algo primeiro.', 'error');
-                    return;
-                }
-                if (texto.length > 50000) { // Limite arbitrário para teste
-                    if (!confirm('Texto muito grande (' + texto.length + ' chars). Continuar?')) return;
-                }
-                if (!confirm('Enviar? Payload tamanho: ' + texto.length + ' chars')) return;
-
-                const payload = {
-                    metodo: 'comparativo',
-                    texto_bruto: texto
-                };
-                console.log('=== ENVIO INICIADO ===');
-                console.log('Payload objeto:', payload);
-                const jsonStr = JSON.stringify(payload);
-                console.log('JSON string (tamanho:', jsonStr.length, '):', jsonStr.substring(0, 500) + (jsonStr.length > 500 ? '...' : ''));
-                console.log('URL:', WEBHOOK_URL);
-
-                const startTime = Date.now();
-                const response = await fetch(WEBHOOK_URL, {
+                const response = await fetch(webhookUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: jsonStr
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ metodo: 'comparativo', texto_bruto: texto })
                 });
-
-                const tempo = Date.now() - startTime;
-                console.log('Resposta recebida - Status:', response.status, 'Tempo:', tempo + 'ms');
-                console.log('Headers:', [...response.headers.entries()]);
-
-                let bodyText;
-                try {
-                    const bodyJson = await response.json();
-                    bodyText = JSON.stringify(bodyJson, null, 2);
-                } catch (e) {
-                    bodyText = await response.text();
-                    console.log('Resposta não é JSON válida:', bodyText);
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
                 }
-
-                // Mostrar resposta
-                respStatus.textContent = response.status + ' ' + response.statusText;
-                respTempo.textContent = tempo;
-                respBody.textContent = bodyText;
-                responseBox.className = response.ok ? 'response-box' : 'response-box error';
+                const data = await response.json();
+                const responseBox = document.getElementById('responseBox');
                 responseBox.style.display = 'block';
-
-                console.log('Resposta completa:', bodyText);
-                showMessage(`Enviado! Status: ${response.status} em ${tempo}ms`, 'success');
-
+                responseBox.textContent = JSON.stringify(data, null, 2);
+                fillFields(data);
+                localStorage.setItem('mcddmData', JSON.stringify(data));
+                localStorage.setItem('textoBruto', texto);
+                goToStep(2);
+                showMessage('Processamento concluído com sucesso!', 'success');
             } catch (error) {
-                console.error('=== ERRO NO ENVIO ===', error);
-                respStatus.textContent = 'Erro de Rede';
-                respTempo.textContent = 'N/A';
-                respBody.textContent = error.message;
-                responseBox.className = 'response-box error';
-                responseBox.style.display = 'block';
-                showMessage('Erro no envio: ' + error.message + '. Verifique console.', 'error');
+                showMessage('Erro no processamento: ' + error.message, 'error');
             }
-        });
+        }
 
-        // Microfone toggle
-        microfoneBtn.addEventListener('click', () => {
-            if (!recognition) initRecognition();
-            if (!recognition) return;
-
-            if (isRecording) {
-                recognition.stop();
-            } else {
-                recognition.start();
-                microfoneBtn.classList.add('active');
-                microfoneBtn.title = 'Parando...';
+        function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let y = 20;
+            doc.setFontSize(18);
+            doc.text('Relatório MCDDM', 20, y);
+            y += 15;
+            doc.setFontSize(14);
+            doc.text('Dados do Imóvel Base:', 20, y);
+            y += 10;
+            doc.setFontSize(12);
+            doc.text(`Endereço: ${getFieldValue('base_endereco')}`, 20, y); y += 7;
+            doc.text(`Área útil: ${getFieldValue('base_area')} m²`, 20, y); y += 7;
+            doc.text(`VLM: R$ ${getFieldValue('base_vlm')}/m²`, 20, y); y += 7;
+            doc.text(`Valor Total: R$ ${getFieldValue('base_valor_total')}`, 20, y); y += 10;
+            doc.text('Comparáveis:', 20, y); y += 10;
+            for (let i = 1; i <= 3; i++) {
+                doc.text(`Comparável ${i}:`, 20, y); y += 7;
+                doc.text(`  Endereço: ${getFieldValue(`comp${i}_endereco`)}`, 20, y); y += 7;
+                doc.text(`  Área: ${getFieldValue(`comp${i}_area`)} m²`, 20, y); y += 7;
+                doc.text(`  Preço: R$ ${getFieldValue(`comp${i}_preco`)}`, 20, y); y += 7;
+                doc.text(`  VLM: R$ ${getFieldValue(`comp${i}_vlm`)}/m²`, 20, y); y += 7;
+                doc.text(`  Ajustes: ${getFieldValue(`comp${i}_ajustes`)}`, 20, y); y += 10;
             }
-        });
-
-        // Modal close
-        closeModal.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) modal.style.display = 'none';
-        });
-
-        // Eventos da textarea
-        textarea.addEventListener('input', () => {
-            updateDebug();
-            saveToStorage();
-        });
-        textarea.addEventListener('keyup', updateDebug); // Para debug em tempo real
+            doc.text(`Grau de Fundamentação: ${getFieldValue('grauFundamentacao')}`, 20, y); y += 10;
+            doc.text('Gerado por EXATA', 20, y);
+            doc.save('MCDDM_relatorio.pdf');
+            showMessage('PDF gerado com sucesso!', 'success');
+        }
 
         // Inicialização
-        loadFromStorage();
-        updateDebug();
-        console.log('Página carregada. Abra o console (F12) para debug completo.');
+        window.addEventListener('load', () => {
+            initRecognition();
+
+            const textarea = document.getElementById('textoBruto');
+            textarea.value = localStorage.getItem('textoBruto') || '';
+            textarea.addEventListener('input', () => {
+                localStorage.setItem('textoBruto', textarea.value);
+            });
+
+            const dataStr = localStorage.getItem('mcddmData');
+            if (dataStr) {
+                const data = JSON.parse(dataStr);
+                const responseBox = document.getElementById('responseBox');
+                responseBox.style.display = 'block';
+                responseBox.textContent = JSON.stringify(data, null, 2);
+                fillFields(data);
+            }
+
+            const currentStep = localStorage.getItem('currentStep') || '1';
+            goToStep(parseInt(currentStep));
+
+            document.getElementById('micBtn').addEventListener('click', () => {
+                if (!recognition) {
+                    showMessage('Reconhecimento de voz não suportado no seu navegador.', 'error');
+                    return;
+                }
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            });
+
+            document.getElementById('btnEnviar').addEventListener('click', processar);
+
+            document.getElementById('btnToStep3').addEventListener('click', () => goToStep(3));
+
+            document.getElementById('btnGerarPDF').addEventListener('click', gerarPDF);
+        });
     </script>
 </body>
 </html>
