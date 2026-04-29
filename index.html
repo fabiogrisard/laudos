@@ -3,109 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Método Comparativo Direto de Dados de Mercado</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>Método Comparativo Direto de Dados de Mercado COM DEBUG INTEGRADO</title>
     <style>
-        body {
-            background: #f4f4f9;
-            color: #555;
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #555;
             padding: 20px;
+            line-height: 1.6;
         }
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
             background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .logo {
-            width: 200px;
-            display: block;
-            margin: 0 auto 20px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,123,255,0.1);
         }
         h1 {
             color: #007BFF;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
+            font-size: 1.8em;
         }
-        h2 {
-            color: #007BFF;
-            border-bottom: 2px solid #007BFF;
-            padding-bottom: 10px;
+        .logo {
+            background: linear-gradient(135deg, #4b0082, #007BFF);
+            color: white;
+            font-weight: bold;
+            font-size: 2em;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+        .input-section label {
+            display: block;
+            font-weight: bold;
+            color: #4b0082;
+            margin-bottom: 10px;
         }
         .input-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
-        #rawText {
+        #textoBruto {
             flex: 1;
-            min-height: 200px;
+            height: 300px;
             padding: 15px;
-            border: 2px solid #ccc;
+            border: 2px solid #007BFF;
             border-radius: 8px;
+            font-size: 16px;
             resize: vertical;
-            font-size: 14px;
-            box-sizing: border-box;
+            font-family: monospace;
         }
-        .mic-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+        #microfoneBtn {
             background: #007BFF;
             color: white;
             border: none;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 1.5em;
             cursor: pointer;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 60px;
+            height: 60px;
             transition: background 0.3s;
         }
-        .mic-btn:hover {
+        #microfoneBtn:hover {
             background: #0056b3;
         }
-        #status {
-            display: block;
-            color: #007BFF;
-            font-weight: bold;
-            margin-bottom: 20px;
+        #microfoneBtn.active {
+            background: #dc3545;
         }
         .buttons {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        input {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-        .fields-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 15px;
+            justify-content: center;
             margin-bottom: 20px;
-        }
-        .fields-grid input {
-            margin: 0;
         }
         button {
             background: #007BFF;
             color: white;
             border: none;
             padding: 12px 24px;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
             transition: background 0.3s;
@@ -113,287 +100,381 @@
         button:hover {
             background: #0056b3;
         }
-        label {
-            display: block;
-            margin: 10px 0;
-            cursor: pointer;
+        .debug-box {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
-        #pontuacao {
-            font-size: 18px;
+        .debug-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        .debug-box p {
+            margin-bottom: 10px;
+        }
+        .response-box {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .response-box.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .response-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+        .response-box.error h3 {
+            color: #721c24;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        #message {
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
             font-weight: bold;
-            color: #007BFF;
-            margin: 20px 0;
+            margin-bottom: 20px;
+            display: none;
         }
-        section {
-            animation: fadeIn 0.5s;
+        #message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        #message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .close:hover {
+            color: #000;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+            #microfoneBtn {
+                width: 100%;
+                border-radius: 6px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="https://raw.githubusercontent.com/fabiogrisard/addcasa/refs/heads/main/logoexatanovo.JPG" alt="Logo Exata" class="logo">
-        <h1>Método Comparativo Direto de Dados de Mercado</h1>
-
-        <!-- SEÇÃO 1: Visível ao carregar -->
-        <div id="section1">
+        <h1>Método Comparativo Direto de Dados de Mercado<br><small>COM DEBUG INTEGRADO</small></h1>
+        <div class="logo">EXATA</div>
+        
+        <div class="input-section">
+            <label for="textoBruto">Texto Bruto (Cole ou grave o texto aqui):</label>
             <div class="input-group">
-                <textarea id="rawText" placeholder="Cole aqui o texto bruto da matrícula, dados do imóvel..."></textarea>
-                <button id="micBtn" class="mic-btn" title="Gravar áudio">🎤</button>
-            </div>
-            <div id="status">Parado</div>
-            <div class="buttons">
-                <button id="copyPrompt">Copiar Prompt para Gemini</button>
-                <button id="processBtn">Enviar para Processamento</button>
+                <textarea id="textoBruto" placeholder="Digite ou grave o texto bruto do mercado..."></textarea>
+                <button id="microfoneBtn" title="Ativar microfone (pt-BR)">🎤</button>
             </div>
         </div>
-
-        <!-- SEÇÃO 2: Oculta até processamento -->
-        <div id="section2" style="display: none;">
-            <h2>Dados do Imóvel (Obrigatórios)</h2>
-            <div class="fields-grid">
-                <input id="data_vistoria" type="date" placeholder="Data da Vistoria">
-                <input id="proprietario" type="text" placeholder="Proprietário">
-                <input id="endereco" type="text" placeholder="Endereço">
-                <input id="area_total" type="number" step="0.01" placeholder="Área Total (m²)">
-                <input id="area_util" type="number" step="0.01" placeholder="Área Útil (m²)">
-                <input id="quartos" type="number" placeholder="Quartos">
-                <input id="banheiros" type="number" placeholder="Banheiros">
-                <input id="garagem" type="number" placeholder="Vagas de Garagem">
-            </div>
-            <div class="buttons">
-                <button id="nextBtn">Próximo</button>
-            </div>
+        
+        <div class="buttons">
+            <button id="testarPayload">🔍 Testar Payload</button>
+            <button id="enviar">🚀 Enviar para Processamento</button>
         </div>
-
-        <!-- SEÇÃO 3: Oculta até validação seção 2 -->
-        <div id="section3" style="display: none;">
-            <h2>Grau de Conservação</h2>
-            <label><input type="radio" name="grau" value="I"> Grau I (Excelente)</label>
-            <label><input type="radio" name="grau" value="II"> Grau II (Bom)</label>
-            <label><input type="radio" name="grau" value="III"> Grau III (Regular)</label>
-            <div id="pontuacao"></div>
-            <div class="buttons">
-                <button id="generatePDF">Gerar Laudo em PDF</button>
-            </div>
+        
+        <div id="debugBox" class="debug-box">
+            <h3>📊 Debug em Tempo Real:</h3>
+            <p><strong>Texto Bruto (primeiros 100 chars):</strong> <span id="debugTexto">-</span></p>
+            <p><strong>Tamanho:</strong> <span id="debugTamanho">0</span> caracteres</p>
+            <p><strong>Status:</strong> <span id="debugStatus">Aguardando entrada...</span></p>
+        </div>
+        
+        <div id="responseBox" class="response-box" style="display: none;">
+            <h3>📥 Resposta do Webhook:</h3>
+            <p><strong>Status HTTP:</strong> <span id="respStatus">-</span></p>
+            <p><strong>Tempo de Resposta:</strong> <span id="respTempo">-</span> ms</p>
+            <pre id="respBody">-</pre>
+        </div>
+        
+        <div id="message"></div>
+    </div>
+    
+    <!-- Modal para Testar Payload -->
+    <div id="payloadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h3>🔍 Payload JSON a ser enviado:</h3>
+            <pre id="modalPre"></pre>
         </div>
     </div>
-
+    
     <script>
-        // Inicialização do localStorage e elementos
-        let recognition;
+        // Configurações
+        const WEBHOOK_URL = 'https://bleatingfrilledlizard-n8n.cloudfy.live/webhook-test/mcddm';
+        const textarea = document.getElementById('textoBruto');
+        const debugTexto = document.getElementById('debugTexto');
+        const debugTamanho = document.getElementById('debugTamanho');
+        const debugStatus = document.getElementById('debugStatus');
+        const testarBtn = document.getElementById('testarPayload');
+        const enviarBtn = document.getElementById('enviar');
+        const microfoneBtn = document.getElementById('microfoneBtn');
+        const responseBox = document.getElementById('responseBox');
+        const respStatus = document.getElementById('respStatus');
+        const respTempo = document.getElementById('respTempo');
+        const respBody = document.getElementById('respBody');
+        const messageDiv = document.getElementById('message');
+        const modal = document.getElementById('payloadModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalPre = document.getElementById('modalPre');
 
-        // Função para inicializar Speech Recognition
-        function initRecognition() {
-            // Verifica suporte do navegador
-            if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-                document.getElementById('status').textContent = 'Speech Recognition não suportado';
-                document.getElementById('micBtn').style.display = 'none';
-                return;
-            }
-            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'pt-BR';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
+        let recognition = null;
+        let isRecording = false;
 
-            // Evento de resultado da transcrição
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                document.getElementById('rawText').value += transcript + ' ';
-                document.getElementById('rawText').focus();
-            };
-
-            // Erro no reconhecimento
-            recognition.onerror = function(event) {
-                console.error('Erro no reconhecimento:', event.error);
-                updateMicStatus('Erro de reconhecimento');
-            };
-
-            // Fim do reconhecimento
-            recognition.onend = function() {
-                updateMicStatus('Parado');
-                document.getElementById('micBtn').style.background = '#007BFF';
-            };
+        // Função para mostrar mensagens
+        function showMessage(msg, type = 'success') {
+            console.log(`[${type.toUpperCase()}] ${msg}`);
+            messageDiv.textContent = msg;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
         }
 
-        // Inicia o reconhecimento de voz
-        function startRecognition(targetElementId) {
-            if (recognition) {
-                recognition.start();
-                updateMicStatus('Gravando...');
-                document.getElementById('micBtn').style.background = 'red';
-            }
-        }
-
-        // Atualiza status do microfone
-        function updateMicStatus(status) {
-            document.getElementById('status').textContent = status;
-        }
-
-        // Salva dados no localStorage
-        function saveData() {
-            const data = {
-                rawText: document.getElementById('rawText').value,
-                data_vistoria: document.getElementById('data_vistoria').value,
-                proprietario: document.getElementById('proprietario').value,
-                endereco: document.getElementById('endereco').value,
-                area_total: document.getElementById('area_total').value,
-                area_util: document.getElementById('area_util').value,
-                quartos: document.getElementById('quartos').value,
-                banheiros: document.getElementById('banheiros').value,
-                garagem: document.getElementById('garagem').value
-            };
-            localStorage.setItem('mcddm_data', JSON.stringify(data));
-        }
-
-        // Carrega dados do localStorage
-        function loadData() {
-            const saved = localStorage.getItem('mcddm_data');
-            if (saved) {
-                const data = JSON.parse(saved);
-                document.getElementById('rawText').value = data.rawText || '';
-                ['data_vistoria', 'proprietario', 'endereco', 'area_total', 'area_util', 'quartos', 'banheiros', 'garagem'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (data[id]) el.value = data[id];
-                });
-            }
-        }
-
-        // Obtém todos os dados
-        function getAllData() {
-            return {
-                data_vistoria: document.getElementById('data_vistoria').value,
-                proprietario: document.getElementById('proprietario').value,
-                endereco: document.getElementById('endereco').value,
-                area_total: document.getElementById('area_total').value,
-                area_util: document.getElementById('area_util').value,
-                quartos: document.getElementById('quartos').value,
-                banheiros: document.getElementById('banheiros').value,
-                garagem: document.getElementById('garagem').value
-            };
-        }
-
-        // Calcula pontuação baseada no grau
-        function getPontuacao(grau) {
-            switch(grau) {
-                case 'I': return '100%';
-                case 'II': return '85%';
-                case 'III': return '70%';
-                default: return '0%';
-            }
-        }
-
-        // Gera PDF com jsPDF
-        function generatePDF(data, grau, pontuacao) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            // Adiciona logo
-            doc.addImage('https://raw.githubusercontent.com/fabiogrisard/addcasa/refs/heads/main/logoexatanovo.JPG', 'JPG', 10, 10, 60, 25);
-            doc.setFontSize(20);
-            doc.text('Laudo - Método Comparativo Direto de Dados de Mercado', 80, 20);
-            doc.setFontSize(12);
-            doc.text(`Data da Vistoria: ${data.data_vistoria}`, 10, 50);
-            doc.text(`Proprietário: ${data.proprietario}`, 10, 60);
-            doc.text(`Endereço: ${data.endereco}`, 10, 70);
-            doc.text(`Área Total: ${data.area_total} m²`, 10, 80);
-            doc.text(`Área Útil: ${data.area_util} m²`, 10, 90);
-            doc.text(`Quartos: ${data.quartos}`, 10, 100);
-            doc.text(`Banheiros: ${data.banheiros}`, 10, 110);
-            doc.text(`Garagem: ${data.garagem} vagas`, 10, 120);
-            doc.text(`Grau de Conservação: ${grau}`, 10, 140);
-            doc.text(`Pontuação: ${pontuacao}`, 10, 150);
-            doc.save('laudo_mcddm.pdf');
-        }
-
-        // Envia dados para webhook
-        async function sendWebhook(data, grau, pontuacao) {
-            const fullData = { ...data, grau, pontuacao };
+        // Auto-save em localStorage
+        function saveToStorage() {
             try {
-                await fetch('https://bleatingfrilledlizard-n8n.cloudfy.live/webhook-test/mcddm', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(fullData)
-                });
-                alert('Dados enviados ao webhook com sucesso!');
-            } catch (error) {
-                console.error('Erro no webhook:', error);
-                alert('Erro ao enviar para webhook.');
+                localStorage.setItem('texto_bruto_mcdm', textarea.value);
+                console.log('Texto salvo no localStorage. Tamanho:', textarea.value.length);
+            } catch (e) {
+                console.error('Erro ao salvar no localStorage:', e);
             }
         }
 
-        // Event listeners após carregamento da página
-        window.onload = function() {
-            initRecognition();
-            loadData();
-
-            // Botão copiar prompt para Gemini
-            document.getElementById('copyPrompt').onclick = function() {
-                const text = document.getElementById('rawText').value;
-                const prompt = `Analise este texto da matrícula e extraia os seguintes dados em formato JSON: data_vistoria, proprietario, endereco, area_total, area_util, quartos, banheiros, garagem. Texto: ${text}`;
-                navigator.clipboard.writeText(prompt).then(() => {
-                    alert('Prompt copiado para Gemini!');
-                });
-            };
-
-            // Botão enviar para processamento
-            document.getElementById('processBtn').onclick = function() {
-                saveData();
-                document.getElementById('section1').style.display = 'none';
-                document.getElementById('section2').style.display = 'block';
-            };
-
-            // Botão próximo (validação seção 2)
-            document.getElementById('nextBtn').onclick = function() {
-                const fields = ['data_vistoria', 'proprietario', 'endereco', 'area_total', 'area_util', 'quartos', 'banheiros', 'garagem'];
-                let valid = true;
-                fields.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (!el.value.trim()) {
-                        valid = false;
-                        el.style.borderColor = 'red';
-                    } else {
-                        el.style.borderColor = '';
-                    }
-                });
-                if (valid) {
-                    saveData();
-                    document.getElementById('section2').style.display = 'none';
-                    document.getElementById('section3').style.display = 'block';
-                } else {
-                    alert('Preencha todos os 8 campos obrigatórios!');
+        // Carregar do localStorage
+        function loadFromStorage() {
+            try {
+                const saved = localStorage.getItem('texto_bruto_mcdm');
+                if (saved) {
+                    textarea.value = saved;
+                    updateDebug();
+                    console.log('Texto carregado do localStorage.');
                 }
-            };
+            } catch (e) {
+                console.error('Erro ao carregar do localStorage:', e);
+            }
+        }
 
-            // Botão microfone
-            document.getElementById('micBtn').onclick = function() {
-                startRecognition('rawText');
-            };
+        // Atualizar debug em tempo real
+        function updateDebug() {
+            const texto = textarea.value;
+            debugTexto.textContent = texto.substring(0, 100) + (texto.length > 100 ? '...' : '');
+            debugTamanho.textContent = texto.length;
+            debugStatus.textContent = texto.trim() ? '✅ Pronto para envio' : '❌ Vazio - Digite algo';
+            console.log('Debug atualizado - Tamanho:', texto.length, 'Status:', debugStatus.textContent);
+        }
 
-            // Radios do grau com cálculo automático de pontuação
-            document.querySelectorAll('input[name="grau"]').forEach(radio => {
-                radio.onchange = function() {
-                    const pont = getPontuacao(this.value);
-                    document.getElementById('pontuacao').innerHTML = `<strong>Pontuação automática: ${pont}</strong>`;
+        // Inicializar reconhecimento de voz
+        function initRecognition() {
+            try {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) {
+                    throw new Error('SpeechRecognition não suportado neste navegador');
+                }
+                recognition = new SpeechRecognition();
+                recognition.lang = 'pt-BR';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    textarea.value += transcript + ' ';
+                    updateDebug();
+                    saveToStorage();
+                    console.log('Texto transcrito:', transcript);
                 };
-            });
+                recognition.onerror = function(event) {
+                    console.error('Erro no reconhecimento de voz:', event.error);
+                    microfoneBtn.classList.remove('active');
+                    isRecording = false;
+                    microfoneBtn.title = 'Erro: ' + event.error;
+                };
+                recognition.onend = function() {
+                    microfoneBtn.classList.remove('active');
+                    isRecording = false;
+                };
+                console.log('Reconhecimento de voz inicializado (pt-BR)');
+            } catch (e) {
+                console.error('Falha ao inicializar reconhecimento:', e);
+                microfoneBtn.disabled = true;
+                microfoneBtn.title = 'Microfone não suportado';
+            }
+        }
 
-            // Botão gerar PDF
-            document.getElementById('generatePDF').onclick = function() {
-                const grauRadio = document.querySelector('input[name="grau"]:checked');
-                if (!grauRadio) {
-                    alert('Selecione um Grau de Conservação!');
+        // Testar Payload
+        testarBtn.addEventListener('click', () => {
+            try {
+                const texto = textarea.value.trim();
+                if (!texto) {
+                    showMessage('Erro: Textarea vazio! Digite algo primeiro.', 'error');
                     return;
                 }
-                const data = getAllData();
-                const grau = grauRadio.value;
-                const pontuacao = getPontuacao(grau);
-                generatePDF(data, grau, pontuacao);
-                sendWebhook(data, grau, pontuacao);
-            };
-        };
+                const payload = {
+                    metodo: 'comparativo',
+                    texto_bruto: texto
+                };
+                const jsonStr = JSON.stringify(payload, null, 2);
+                console.log('=== TESTE PAYLOAD ===');
+                console.log('Payload objeto:', payload);
+                console.log('JSON string (tamanho:', jsonStr.length, '):', jsonStr);
+                console.log('Texto bruto tamanho:', texto.length);
+                modalPre.textContent = jsonStr;
+                modal.style.display = 'block';
+            } catch (e) {
+                console.error('Erro ao testar payload:', e);
+                showMessage('Erro ao gerar payload: ' + e.message, 'error');
+            }
+        });
+
+        // Enviar para Webhook
+        enviarBtn.addEventListener('click', async () => {
+            try {
+                const texto = textarea.value.trim();
+                if (!texto) {
+                    showMessage('Erro: Textarea vazio! Digite ou grave algo primeiro.', 'error');
+                    return;
+                }
+                if (texto.length > 50000) { // Limite arbitrário para teste
+                    if (!confirm('Texto muito grande (' + texto.length + ' chars). Continuar?')) return;
+                }
+                if (!confirm('Enviar? Payload tamanho: ' + texto.length + ' chars')) return;
+
+                const payload = {
+                    metodo: 'comparativo',
+                    texto_bruto: texto
+                };
+                console.log('=== ENVIO INICIADO ===');
+                console.log('Payload objeto:', payload);
+                const jsonStr = JSON.stringify(payload);
+                console.log('JSON string (tamanho:', jsonStr.length, '):', jsonStr.substring(0, 500) + (jsonStr.length > 500 ? '...' : ''));
+                console.log('URL:', WEBHOOK_URL);
+
+                const startTime = Date.now();
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: jsonStr
+                });
+
+                const tempo = Date.now() - startTime;
+                console.log('Resposta recebida - Status:', response.status, 'Tempo:', tempo + 'ms');
+                console.log('Headers:', [...response.headers.entries()]);
+
+                let bodyText;
+                try {
+                    const bodyJson = await response.json();
+                    bodyText = JSON.stringify(bodyJson, null, 2);
+                } catch (e) {
+                    bodyText = await response.text();
+                    console.log('Resposta não é JSON válida:', bodyText);
+                }
+
+                // Mostrar resposta
+                respStatus.textContent = response.status + ' ' + response.statusText;
+                respTempo.textContent = tempo;
+                respBody.textContent = bodyText;
+                responseBox.className = response.ok ? 'response-box' : 'response-box error';
+                responseBox.style.display = 'block';
+
+                console.log('Resposta completa:', bodyText);
+                showMessage(`Enviado! Status: ${response.status} em ${tempo}ms`, 'success');
+
+            } catch (error) {
+                console.error('=== ERRO NO ENVIO ===', error);
+                respStatus.textContent = 'Erro de Rede';
+                respTempo.textContent = 'N/A';
+                respBody.textContent = error.message;
+                responseBox.className = 'response-box error';
+                responseBox.style.display = 'block';
+                showMessage('Erro no envio: ' + error.message + '. Verifique console.', 'error');
+            }
+        });
+
+        // Microfone toggle
+        microfoneBtn.addEventListener('click', () => {
+            if (!recognition) initRecognition();
+            if (!recognition) return;
+
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                recognition.start();
+                microfoneBtn.classList.add('active');
+                microfoneBtn.title = 'Parando...';
+            }
+        });
+
+        // Modal close
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+
+        // Eventos da textarea
+        textarea.addEventListener('input', () => {
+            updateDebug();
+            saveToStorage();
+        });
+        textarea.addEventListener('keyup', updateDebug); // Para debug em tempo real
+
+        // Inicialização
+        loadFromStorage();
+        updateDebug();
+        console.log('Página carregada. Abra o console (F12) para debug completo.');
     </script>
 </body>
 </html>
